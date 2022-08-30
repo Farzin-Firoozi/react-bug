@@ -1,19 +1,17 @@
-import { createStore, compose, applyMiddleware } from "redux";
-import { reducers } from "./../reducers/index";
-import thunk from "redux-thunk";
-import { getAllCourses } from "./../actions/courses";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit"
 
-export const store = createStore(
-    reducers,
-    compose(
-        applyMiddleware(thunk),
-        window.__REDUX_DEVTOOLS_EXTENSION__ &&
-            window.__REDUX_DEVTOOLS_EXTENSION__()
-    )
-);
+import userReducer from "./reducers/user"
 
-//Initialize
-store.dispatch(getAllCourses());
+import { combineReducers } from "redux"
 
-//subscribe
-store.subscribe(() => console.log(store.getState()));
+const rootReducer = combineReducers({
+  user: userReducer,
+})
+
+const store = configureStore({
+  reducer: rootReducer,
+  // middleware option needs to be provided for avoiding the error. ref: https://redux-toolkit.js.org/usage/usage-guide#use-with-redux-persist
+  middleware: getDefaultMiddleware({}),
+})
+
+export default store
